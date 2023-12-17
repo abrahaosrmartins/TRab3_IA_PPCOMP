@@ -1,4 +1,4 @@
-Este repositório é uma implementação de algoritmos de aprendizado por reforço utilizando os exemplo MountainCar e CarRacing disponíveis no playground Gymanasium da OpenAi.
+Este repositório é uma implementação de algoritmos de aprendizado por reforço utilizando os exemplo MountainCar e CarRacing disponíveis no playground Gymanasium da OpenAi. Trata-se de um trabalho feito durante a disciplina de IA do Programa de Pós-Graduação em Computação Aplicada do Instituto Federal do Espírito Santo. Turma 2023/02
 
 #### Executando o algoritmo
 
