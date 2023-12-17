@@ -1,0 +1,61 @@
+# @title Treinamento para CarRacing-v2 PPO
+
+desafio = "CarRacing-v2"
+env = gym.make(desafio)
+
+# def recompensa_tardia(env, obs, action, next_obs):
+#     if obs[1] >= 0.5:
+#       return 1.0
+#     return -0.1
+
+#RL_ALGORITHMS = [A2C, DDPG, DQN, HER, PPO, SAC, TD3]
+RL_ALGORITHMS = [PPO]
+for RL in RL_ALGORITHMS:
+    nome_algoritmo = str(RL).split('.')[-1].upper()
+    nome_modelo = f"/content/Modelo{nome_algoritmo}_Gym_{desafio}"
+    print(nome_modelo)
+    env = Monitor(gym.make(desafio))
+    nome_modelo = f"/content/ModeloDQN_Gym_{desafio}"
+    # modelo = PPO("MlpPolicy", env, verbose=1)
+    modelo = PPO(
+        "CnnPolicy",
+        env,
+        verbose=1,
+        learning_rate=1e-4,
+        n_steps=512,
+        n_epochs=10,
+        ent_coef = 0.01,
+        gamma=0.99,
+        vf_coef=0.5,
+        max_grad_norm=0.5,
+        gae_lambda=0.95,
+        clip_range = 0.1
+    )
+    # modelo.learn(total_timesteps=100000)
+    modelo.learn(total_timesteps=200000, callback=PlottingCallback())
+    modelo.save(nome_modelo)
+
+
+
+    --------------------------------------
+| rollout/                |          |
+|    ep_len_mean          | 960      |
+|    ep_rew_mean          | 405      |
+| time/                   |          |
+|    fps                  | 23       |
+|    iterations           | 391      |
+|    time_elapsed         | 8347     |
+|    total_timesteps      | 200192   |
+| train/                  |          |
+|    approx_kl            | 0.01655  |
+|    clip_fraction        | 0.456    |
+|    clip_range           | 0.1      |
+|    entropy_loss         | -4.23    |
+|    explained_variance   | 0.934    |
+|    learning_rate        | 0.0001   |
+|    loss                 | 0.729    |
+|    n_updates            | 3900     |
+|    policy_gradient_loss | 0.0141   |
+|    std                  | 0.995    |
+|    value_loss           | 5.05     |
+--------------------------------------

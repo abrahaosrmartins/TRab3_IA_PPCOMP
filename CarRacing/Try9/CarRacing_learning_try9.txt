@@ -1,0 +1,63 @@
+# Defina o desafio
+desafio = "CarRacing-v2"
+
+# Crie o ambiente
+env = gym.make(desafio)
+env = Monitor(env)  # Adicione Monitor para coletar estatísticas
+
+# Defina o nome do modelo
+nome_modelo = "ModeloPPO_Gym_CarRacing-v2"
+
+# Se o modelo existir, carregue-o
+if os.path.exists(nome_modelo):
+    modelo = PPO.load(nome_modelo, env=DummyVecEnv([lambda: env]))
+    print("Modelo carregado. Treinamento adicional pode ser realizado.")
+else:
+    # Crie um novo modelo se o modelo não existir
+    modelo = PPO(
+        "CnnPolicy",
+        env=DummyVecEnv([lambda: env]),
+        verbose=1,
+        learning_rate=1e-4,
+        n_steps=512,
+        n_epochs=10,
+        ent_coef=0.01,
+        gamma=0.99,
+        vf_coef=0.5,
+        max_grad_norm=0.5,
+        gae_lambda=0.95,
+        clip_range=0.1
+    )
+
+# Treine o modelo
+modelo.learn(total_timesteps=400000, callback=PlottingCallback())
+
+# Salve o modelo treinado
+modelo.save(nome_modelo)
+
+
+
+
+
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 973         |
+|    ep_rew_mean          | 310         |
+| time/                   |             |
+|    fps                  | 42          |
+|    iterations           | 782         |
+|    time_elapsed         | 9415        |
+|    total_timesteps      | 400384      |
+| train/                  |             |
+|    approx_kl            | 0.009258104 |
+|    clip_fraction        | 0.4         |
+|    clip_range           | 0.1         |
+|    entropy_loss         | -4.51       |
+|    explained_variance   | 0.965       |
+|    learning_rate        | 0.0001      |
+|    loss                 | 0.203       |
+|    n_updates            | 7810        |
+|    policy_gradient_loss | 0.00591     |
+|    std                  | 1.1         |
+|    value_loss           | 6.09        |
+-----------------------------------------

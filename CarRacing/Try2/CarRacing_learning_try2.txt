@@ -1,0 +1,36 @@
+# @title Treinamento para CarRacing-v2 PPO
+
+desafio = "CarRacing-v2"
+env = gym.make(desafio)
+
+# def recompensa_tardia(env, obs, action, next_obs):
+#     if obs[1] >= 0.5:
+#       return 1.0
+#     return -0.1
+
+#RL_ALGORITHMS = [A2C, DDPG, DQN, HER, PPO, SAC, TD3]
+RL_ALGORITHMS = [PPO]
+for RL in RL_ALGORITHMS:
+    nome_algoritmo = str(RL).split('.')[-1].upper()
+    nome_modelo = f"/content/Modelo{nome_algoritmo}_Gym_{desafio}"
+    print(nome_modelo)
+    env = Monitor(gym.make(desafio))
+    nome_modelo = f"/content/ModeloDQN_Gym_{desafio}"
+    modelo = PPO("MlpPolicy", env, verbose=1)
+    # modelo = PPO(
+    #     "CnnPolicy",
+    #     env,
+    #     verbose=1,
+    #     learning_rate=1e-4,
+    #     n_steps=512,
+    #     n_epochs=10,
+    #     ent_coef=0.00429,
+    #     gamma=0.9999,
+    #     vf_coef=0.5,
+    #     max_grad_norm=0.5,
+    #     gae_lambda=0.95,
+    #     clip_range=0.2
+    # )
+    modelo.learn(total_timesteps=50000)
+        #modelo.learn(total_timesteps=50000, callback=PlottingCallback())
+    modelo.save(nome_modelo)

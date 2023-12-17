@@ -1,0 +1,56 @@
+desafio = "CarRacing-v2"
+env = gym.make(desafio)
+env = Monitor(env)
+nome_modelo = f"ModeloPPO_Gym_{desafio}.zip"
+
+if os.path.exists(nome_modelo):
+    print(f"Carregando modelo pré-treinado: {nome_modelo}")
+    modelo = PPO.load(nome_modelo, env=env)
+else:
+    print("Criando um novo modelo")
+    modelo = PPO(
+        "CnnPolicy",
+        env=DummyVecEnv([lambda: env]),
+        verbose=1,
+        learning_rate=1e-4,
+        n_steps=512,
+        n_epochs=10,
+        ent_coef=0.01,
+        gamma=0.99,
+        vf_coef=0.5,
+        max_grad_norm=0.5,
+        gae_lambda=0.95,
+        clip_range=0.1,
+        reset_num_timesteps=False,
+    )
+
+total_timesteps = 400000
+callback_list = CallbackList(
+    [CheckpointCallback(save_freq=100000, save_path='./'), PlottingCallback()])
+modelo.learn(total_timesteps=total_timesteps, callback=callback_list)
+
+
+
+
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 1e+03       |
+|    ep_rew_mean          | 307         |
+| time/                   |             |
+|    fps                  | 40          |
+|    iterations           | 782         |
+|    time_elapsed         | 9953        |
+|    total_timesteps      | 400384      |
+| train/                  |             |
+|    approx_kl            | 0.006595294 |
+|    clip_fraction        | 0.304       |
+|    clip_range           | 0.1         |
+|    entropy_loss         | -4.95       |
+|    explained_variance   | 0.982       |
+|    learning_rate        | 0.0001      |
+|    loss                 | 0.412       |
+|    n_updates            | 15630       |
+|    policy_gradient_loss | -0.000861   |
+|    std                  | 1.29        |
+|    value_loss           | 3.33        |
+-----------------------------------------

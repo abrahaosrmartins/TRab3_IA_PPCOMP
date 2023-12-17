@@ -1,0 +1,20 @@
+# @title Treinamento para MountainCar-v0
+desafio = "MountainCar-v0"
+
+def recompensa_tardia(env, obs, action, next_obs):
+    if obs[1] >= 0.5:
+      return 1.0
+    return -0.1
+
+#RL_ALGORITHMS = [A2C, DDPG, DQN, HER, PPO, SAC, TD3]
+RL_ALGORITHMS = [DQN]
+for RL in RL_ALGORITHMS:
+    nome_algoritmo = str(RL).split('.')[-1].upper()
+    nome_modelo = f"/content/Modelo{nome_algoritmo}_Gym_{desafio}"
+    print(nome_modelo)
+    env = Monitor(gym.make(desafio))
+    nome_modelo = f"/content/ModeloDQN_Gym_{desafio}"
+    modelo = DQN("MlpPolicy", env, verbose=1)
+    modelo.learn(total_timesteps=100000)
+    #modelo.learn(total_timesteps=50000, callback=PlottingCallback())
+    modelo.save(nome_modelo)
